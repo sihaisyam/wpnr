@@ -22,12 +22,19 @@ class User {
         $stmt->execute();
         return $stmt;
     }
+
+    public function getUsersId($id){
+        $sqlQuery = "SELECT * FROM " . $this->db_table . " WHERE id = ".$id;
+        $stmt = $this->conn->prepare($sqlQuery);
+        $stmt->execute();
+        return $stmt;
+    }
 }
 
-$database = new Database();
-$db = $database->getConnection();
-$query = new User($db);
-$result = $query->getUsers()->fetchAll(PDO::FETCH_ASSOC);
+// $database = new Database();
+// $db = $database->getConnection();
+// $query = new User($db);
+// $result = $query->getUsers()->fetchAll(PDO::FETCH_ASSOC);
 // var_dump($result);
 
 ?>
