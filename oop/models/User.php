@@ -71,5 +71,46 @@ class User
         }
         return false;
     }
-        // READ singl
+    
+    public function updateUser(){
+        $sqlQuery = "UPDATE
+        ". $this->db_table ."
+        SET
+        fullname = :fullname,
+        email = :email,
+        job = :job,
+        no_telepon = :no_telepon 
+        WHERE
+        id_user = :id_user";
+        $stmt = $this->conn->prepare($sqlQuery);
+        
+        $this->fullname=htmlspecialchars(strip_tags($this->fullname));
+        $this->email=htmlspecialchars(strip_tags($this->email));
+        $this->job=htmlspecialchars(strip_tags($this->job));
+        $this->no_telepon=htmlspecialchars(strip_tags($this->no_telepon));
+        $this->id_user=htmlspecialchars(strip_tags($this->id_user));
+        // bind data
+        $stmt->bindParam(":fullname", $this->fullname);
+        $stmt->bindParam(":email", $this->email);
+        $stmt->bindParam(":job", $this->job);
+        $stmt->bindParam(":no_telepon", $this->no_telepon);
+        $stmt->bindParam(":id_user", $this->id_user);
+
+        if($stmt->execute()){
+            return true;
+        }
+        return false;
+    }
+    // DELETE
+    function deleteUser(){
+        $sqlQuery = "DELETE FROM " . $this->db_table . " WHERE id_user = ?";
+        $stmt = $this->conn->prepare($sqlQuery);
+        $this->id=htmlspecialchars(strip_tags($this->id_user));
+        $stmt->bindParam(1, $this->id_user);
+
+        if($stmt->execute()){
+            return true;
+        }
+        return false;
+    }
 }
