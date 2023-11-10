@@ -12,47 +12,48 @@
 
 <body>
     <?php
-    include_once 'Database.php';
-    include_once 'User.php';
-    include_once 'Sekolah.php';
-    include_once 'Skill.php';
+    include_once '../config/Database.php';
+    include_once '../models/User.php';
+    include_once '../models/Sekolah.php';
+    include_once '../models/Skill.php';
 
     $database = new Database();
     $db = $database->getConnection();
 
     // TD_user 
     $query = new User($db);
-    $listuser = $query->getUserId($_GET['id_user'])->fetchAll(PDO::FETCH_ASSOC);
-    // var_dump($listuser[0]);
-    $user_data = ($listuser[0]);
+    $query->id_user = $_GET['id_user'];
+    $query->getUserId();
+    // var_dump($listuser);
 
     // TD_sekolah
-    $querysekolah = new Tb_sekolah($db);
-    $listsekolah = $querysekolah->getSekolahId($_GET['id_user'])->fetchAll(PDO::FETCH_ASSOC);
+    $querysekolah = new sekolah($db);
+    $querysekolah->id_user = $_GET['id_user'];
+    $listsekolah = $querysekolah->getSekolahId();
     // var_dump($listsekolah);
-    $user_sekolah = ($listsekolah[0]);
+    $user_sekolah = ($listsekolah);
 
     // TD_skill
-    $queryskill = new Tb_skill($db);
-    $listskill = $queryskill->getSkillId($_GET['id_user'])->fetchAll(PDO::FETCH_ASSOC);
+    $queryskill = new Skill($db);
+    $queryskill->id_user = $_GET['id_user'];
+    $listskill = $queryskill->getUserId();
     // var_dump($listskill);
-    $user_skill = ($listskill[0]);
 
     ?>
     <div class="container">
         <div class="header">
             <div class="full-name">
-                <h1> <?php echo $user_data['fullname']; ?> </h1>
+                <h1> <?php echo $query->fullname; ?> </h1>
             </div>
             <div class="contact-info">
                 <span class="email">Email: </span>
-                <span class="email-val"> <?php echo $user_data['email']; ?> </span>
+                <span class="email-val"> <?php echo $query->email; ?> </span>
                 <span class="separator"></span>
                 <span class="phone">Phone: </span>
-                <span class="phone-val"> <?php echo $user_data['no_telepon']; ?> </span>
+                <span class="phone-val"> <?php echo $query->no_telepon; ?> </span>
                 <span class="separator"></span>
                 <span class="job">Job: </span>
-                <span class="job-val"> <?php echo $user_data['job']; ?> </span>
+                <span class="job-val"> <?php echo $query->job; ?> </span>
             </div>
         </div>
         <div class="details">

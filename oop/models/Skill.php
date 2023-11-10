@@ -1,7 +1,5 @@
 <?php
-include_once 'Database.php';
-
-class Tb_skill
+class Skill
 {
     // Connection
     private $conn;
@@ -18,24 +16,124 @@ class Tb_skill
     {
         $this->conn = $db;
     }
-
-    public function getSkill()
+    //read
+    public function getUser()
     {
         $sqlQuery = "SELECT * FROM " . $this->db_table . "";
         $stmt = $this->conn->prepare($sqlQuery);
         $stmt->execute();
         return $stmt;
     }
-    public function getSkillId($id_skill)
+    public function getUserId()
     {
-        $sqlQuery = "SELECT * FROM " . $this->db_table . " WHERE id_user =" . $id_skill;
+        $sqlQuery = "SELECT
+        id_user,
+        id_skill,
+        skill,
+        lembaga,
+        nilai
+        FROM
+        " . $this->db_table . "
+        WHERE
+        id_user = ? ";
         $stmt = $this->conn->prepare($sqlQuery);
+        $stmt->bindParam(1, $this->id_user);
         $stmt->execute();
-        return $stmt;
+        $dataRow = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        var_dump($dataRow);
+        die;
+        return $dataRow;
+    }
+
+    public function getskillId()
+    {
+        $sqlQuery = "SELECT
+        id_user,
+        id_skill,
+        skill,
+        lembaga,
+        nilai
+        FROM
+        " . $this->db_table . "
+        WHERE
+        id_skill = ?
+        LIMIT 0,1";
+        $stmt = $this->conn->prepare($sqlQuery);
+        $stmt->bindParam(1, $this->id_skill);
+        $stmt->execute();
+        $dataRow = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->id_user = $dataRow['id_user'];
+        $this->skill = $dataRow['skill'];
+        $this->lembaga = $dataRow['lembaga'];
+        $this->nilai = $dataRow['nilai'];
+    }
+    //CREATE
+    public function createSkill()
+    {
+        $sqlQuery = "INSERT INTO
+         " . $this->db_table . "
+         SET
+         id_user = :id_user,
+         skill = :skill,
+         lembaga = :lembaga,
+         nilai = :nilai";
+        $stmt = $this->conn->prepare($sqlQuery);
+        // sanitize
+        $this->id_user = htmlspecialchars(strip_tags($this->id_user));
+        $this->skill = htmlspecialchars(strip_tags($this->skill));
+        $this->lembaga = htmlspecialchars(strip_tags($this->lembaga));
+        $this->nilai = htmlspecialchars(strip_tags($this->nilai));
+        // bind data
+        $stmt->bindParam(":id_user", $this->id_user);
+        $stmt->bindParam(":skill", $this->skill);
+        $stmt->bindParam(":lembaga", $this->lembaga);
+        $stmt->bindParam(":nilai", $this->nilai);
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+    //UPDATE
+    public function updateSkill()
+    {
+        $sqlQuery = "UPDATE
+        " . $this->db_table . "
+        SET
+        id_user = :id_user,
+        skill = :skill,
+        lembaga = :lembaga,
+        nilai = :nilai
+        WHERE
+        id_skill = :id_skill";
+        $stmt = $this->conn->prepare($sqlQuery);
+        $this->id_skill = htmlspecialchars(strip_tags($this->id_skill));
+        $this->skill = htmlspecialchars(strip_tags($this->skill));
+        $this->lembaga = htmlspecialchars(strip_tags($this->lembaga));
+        $this->nilai = htmlspecialchars(strip_tags($this->nilai));
+        $this->id_user = htmlspecialchars(strip_tags($this->id_user));
+        // bind data
+        $stmt->bindParam(":id_skill", $this->id_skill);
+        $stmt->bindParam(":skill", $this->skill);
+        $stmt->bindParam(":lembaga", $this->lembaga);
+        $stmt->bindParam(":nilai", $this->nilai);
+        $stmt->bindParam(":id_user", $this->id_user);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+    //DELETE
+    function deleteSkill()
+    {
+        $sqlQuery = "DELETE FROM " . $this->db_table . " WHERE id_skill = ?";
+        $stmt = $this->conn->prepare($sqlQuery);
+        $this->id_skill = htmlspecialchars(strip_tags($this->id_skill));
+        $stmt->bindParam(1, $this->id_skill);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
     }
 }
-
-$database = new Database();
-$db = $database->getConnection();
-//$queryskill = new Tb_skill($db);
-//$result = $query->getSkill()->fetchAll(PDO::FETCH_ASSOC);
